@@ -10,6 +10,8 @@ public class TaskConfiguration : IEntityTypeConfiguration<Models.Task>
     {
         builder.ToTable("tasks");
         builder.HasKey(t => t.Id);
+
+        builder.HasIndex(t => t.Name).IsUnique();
         
         builder.Property(t => t.Name).HasMaxLength(50).IsRequired();
         builder.Property(t => t.Description).HasMaxLength(255).IsRequired();

@@ -27,7 +27,7 @@ public class TmsDataContext(DbContextOptions<TmsDataContext> options) : DbContex
 
         foreach (var entry in entries)
         {
-            entry.Property("UpdatedAt").CurrentValue = DateTime.UtcNow;
+            entry.Property("UpdatedAt").CurrentValue = new DateTimeOffset(DateTime.UtcNow);
         }
         
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
