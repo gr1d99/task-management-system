@@ -18,7 +18,7 @@ public class TaskService(
 
         Task? task = new Task()
         {
-            Name = data.Name,
+            Title = data.Title,
             Description = data.Description,
             AssigneeId = data.AssigneeId,
             Status = status
@@ -89,7 +89,7 @@ public class TaskService(
             throw new Exception("Task not found");
         }
 
-        task.Name = data.Name;
+        task.Title = data.Title;
         task.Description = data.Description;
 
         if (data.AssigneeId != null && data.AssigneeId != task.AssigneeId)
@@ -115,7 +115,7 @@ public class TaskService(
         return new TaskResponseDto()
         {
             Token = task.Token,
-            Name = task.Name,
+            Title = task.Title,
             AssigneeId = task.AssigneeId,
             Description = task.Description,
             CompletedAt = task.CompletedAt,
@@ -135,8 +135,7 @@ public class TaskService(
         {
             Id = task.Assignee.Id,
             Email = task.Assignee.Email,
-            FirstName = task.Assignee.FirstName,
-            LastName = task.Assignee.LastName,
+            Username = task.Assignee.Username
         };
     }
     private static StatusDto? GetTaskStatus(Task task)

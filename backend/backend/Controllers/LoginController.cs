@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[Route("api/v1/auth/[controller]")]
 public class LoginController(ILoginService loginService) : ControllerBase
 {
     [HttpPost("")]

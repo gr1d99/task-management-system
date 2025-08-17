@@ -14,20 +14,18 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder
             .HasIndex(p => p.Email)
             .IsUnique();
+        builder
+            .HasIndex(p => p.Username)
+            .IsUnique();
 
         builder
             .Property(p => p.Email)
-            .HasMaxLength(20)
+            .HasMaxLength(100)
             .IsRequired();
         builder
-            .Property(p => p.FirstName)
-            .HasMaxLength(20)
+            .Property(p => p.Username)
+            .HasMaxLength(100)
             .IsRequired();
-        builder
-            .Property(p => p.LastName)
-            .HasMaxLength(20)
-            .IsRequired();
-        
         builder
             .Property(p => p.Token)
             .HasDefaultValueSql("uuid_generate_v4()");

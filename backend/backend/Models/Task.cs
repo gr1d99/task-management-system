@@ -6,7 +6,7 @@ public class Task
     public Guid Token { get; set; }
     public long? AssigneeId { get; set; }
     public long? StatusId { get; set; }
-    public string Name { get; set; }
+    public string Title { get; set; }
     public string Description { get; set; }
     public DateTimeOffset? CompletedAt { get; set; }
     public DateTimeOffset CreatedAt { get; set; }

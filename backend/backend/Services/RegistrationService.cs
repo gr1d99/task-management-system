@@ -12,8 +12,7 @@ public class RegistrationService(
     {
         Person? person = new Person()
         {
-            FirstName = data.FirstName,
-            LastName = data.LastName,
+            Username = data.Username,
             Email = data.Email,
             PasswordHash = PasswordHasher.HashPassword(data.Password)
         };
@@ -32,8 +31,7 @@ public class RegistrationService(
         {
             Id = person.Id,
             Email = person.Email,
-            FirstName = person.FirstName,
-            LastName = person.LastName
+            Username = person.Username
         };
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.Data;
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(TmsDataContext))]
-    partial class TmsDataContextModelSnapshot : ModelSnapshot
+    [Migration("20250817095221_IncreaseCharacterLimitOfPersonTable")]
+    partial class IncreaseCharacterLimitOfPersonTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,15 +246,15 @@ namespace backend.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("description");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
                     b.Property<long?>("StatusId")
                         .HasColumnType("bigint")
                         .HasColumnName("status_id");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("title");
 
                     b.Property<Guid>("Token")
                         .ValueGeneratedOnAdd()
@@ -268,6 +271,10 @@ namespace backend.Migrations
 
                     b.HasIndex("AssigneeId")
                         .HasDatabaseName("ix_tasks_assignee_id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_tasks_name");
 
                     b.HasIndex("StatusId")
                         .HasDatabaseName("ix_tasks_status_id");

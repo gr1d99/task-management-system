@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Authentication;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using backend.Data;
 using backend.Dto;
@@ -35,8 +34,7 @@ public class LoginService(
             {
                 Id = person.Id,
                 Email = person.Email,
-                FirstName = person.FirstName,
-                LastName = person.LastName
+                Username = person.Username
             }
         };
     }
