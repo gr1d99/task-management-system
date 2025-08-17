@@ -25,6 +25,8 @@ public static class DependencyInjection
         builder.Services.AddScoped<IPaginationService, PaginationService>();
         builder.Services.AddScoped<IRegistrationService, RegistrationService>();
         builder.Services.AddScoped<ILoginService, LoginService>();
+        builder.Services.AddScoped<IUsersService, UsersService>();
+        builder.Services.AddScoped<IStatusService, StatusService>();
         
         return services;
     }

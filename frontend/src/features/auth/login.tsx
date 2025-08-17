@@ -1,7 +1,5 @@
 import {type FormEvent, useEffect} from "react";
 
-import { toast } from 'react-toastify'
-
 import {useAppDispatch, useAppSelector} from "../../store";
 import {loginAsync} from "./auth-slice.ts";
 import {useNavigate} from "react-router-dom";

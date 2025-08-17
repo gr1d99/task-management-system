@@ -1,43 +1,148 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
+import {createAsyncThunk, createSelector, createSlice} from '@reduxjs/toolkit'
+import type {
+    IPaginatedResponse,
+    IStatus,
+    ITask,
+    ITaskFormValue,
+    ITaskQueryParameters,
+    ITasksState
+} from "../../interfaces";
+import {axiosInstance} from "../../api";
+import type {RootState} from "../../store";
 
-export interface CounterState {
-    value: number
-    status: 'idle' | 'loading' | 'failed'
+const initialState: ITasksState = {
+    loading: false,
+    taskCreated: false,
+    taskUpdated: false,
+    error: null,
+    taskList: [],
+    statusesList: [],
 }
 
-// Define the initial value for the slice state
-const initialState: CounterState = {
-    value: 0,
-    status: 'idle'
-}
-
-// Slices contain Redux reducer logic for updating state, and
-// generate actions that can be dispatched to trigger those updates.
-export const counterSlice = createSlice({
-    name: 'counter',
-    initialState,
-    // The `reducers` field lets us define reducers and generate associated actions
-    reducers: {
-        increment: state => {
-            // Redux Toolkit allows us to write "mutating" logic in reducers. It
-            // doesn't actually mutate the state because it uses the Immer library,
-            // which detects changes to a "draft state" and produces a brand new
-            // immutable state based off those changes
-            state.value += 1
-        },
-        decrement: state => {
-            state.value -= 1
-        },
-        // Use the PayloadAction type to declare the contents of `action.payload`
-        incrementByAmount: (state, action: PayloadAction<number>) => {
-            state.value += action.payload
+export const createTaskAsync = createAsyncThunk(
+    'tasks/createAsync',
+    async (data: ITaskFormValue, {rejectWithValue, dispatch}) => {
+        try {
+            await axiosInstance.post('/api/v1/tasks', {
+                ...data,
+                assigneeId: data.assignee?.value,
+            });
+            dispatch(fetchTasksAsync({page: 1, limit: 1000}));
+        } catch (e) {
+            return rejectWithValue(e);
         }
+    }
+)
+
+export const fetchTasksAsync = createAsyncThunk(
+    'tasks/fetchAsync',
+    async (params: ITaskQueryParameters, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get<IPaginatedResponse<ITask>>('/api/v1/tasks', {params});
+
+            return response.data;
+        } catch (e) {
+            return rejectWithValue(e);
+        }
+    }
+)
+
+export const fetchTaskStatusesAsync = createAsyncThunk(
+    'tasks/statuses/fetchAsync',
+    async (params: ITaskQueryParameters, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get<IPaginatedResponse<IStatus>>('/api/v1/statuses', {params});
+
+            return response.data;
+        } catch (e) {
+            return rejectWithValue(e);
+        }
+    }
+)
+
+export const updateTaskAsync = createAsyncThunk(
+    'tasks/updateAsync',
+    async (data: ITaskFormValue, {rejectWithValue, dispatch}) => {
+        try {
+            const response = await axiosInstance.put(`/api/v1/tasks/${data.token}`, {
+                ...data,
+                assigneeId: data.assignee?.value,
+                statusId: data.status?.value,
+            });
+
+            dispatch(fetchTasksAsync({ page: 1, limit: 1000 }));
+
+            return response.data;
+        } catch (e) {
+            return rejectWithValue(e);
+        }
+    }
+)
+
+export const tasksSlice = createSlice({
+    name: 'tasks',
+    initialState,
+    reducers: {
+        clearError: (state,) => {
+            state.error = null;
+        }
+    },
+    extraReducers: builder => {
+        builder.addCase(createTaskAsync.pending, (state) => {
+            state.loading = true;
+        }).addCase(createTaskAsync.fulfilled, (state) => {
+            state.taskCreated = true;
+            state.loading = false;
+        }).addCase(createTaskAsync.rejected, (state, {payload}) => {
+            state.loading = false;
+            state.error = payload as string;
+        }).addCase(fetchTasksAsync.pending, (state) => {
+            state.loading = true;
+        }).addCase(fetchTasksAsync.fulfilled, (state, {payload}) => {
+            state.loading = false;
+            state.taskList = payload.results;
+        }).addCase(fetchTasksAsync.rejected, (state, {payload}) => {
+            state.loading = false;
+            state.error = payload as string;
+        }).addCase(updateTaskAsync.pending, (state) => {
+            state.loading = true;
+        }).addCase(updateTaskAsync.fulfilled, (state,) => {
+            state.loading = false;
+            state.taskUpdated = true;
+        }).addCase(updateTaskAsync.rejected, (state, {payload}) => {
+            state.loading = false;
+            state.error = payload as string;
+        }).addCase(fetchTaskStatusesAsync.fulfilled, (state, {payload}) => {
+            state.statusesList = payload.results;
+        });
     }
 })
 
-// Export the generated action creators for use in components
-export const { increment, decrement, incrementByAmount } = counterSlice.actions
+export const {clearError} = tasksSlice.actions;
+export const selectGroupedTasks = createSelector((state: RootState) => state.tasks.taskList,
+    (tasks) => {
+        const grouped: {
+            [key: string]: ITask[];
+        } = {};
 
-// Export the slice reducer for use in the store configuration
-export default counterSlice.reducer
+        for (const task of tasks) {
+            const status = task.status;
+
+            if (grouped[status.name]) {
+                grouped[status.name].push(task);
+            } else {
+                grouped[status.name] = [task];
+            }
+        }
+
+        return grouped;
+    })
+export const selectStatusesOptions = createSelector((state: RootState) => state.tasks.statusesList,
+    (statuses) => {
+        return statuses.map(status => ({
+            label: status.name,
+            value: status.id.toString()
+        }))
+    });
+
+export default tasksSlice.reducer;

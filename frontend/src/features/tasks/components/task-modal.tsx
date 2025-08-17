@@ -1,15 +1,16 @@
 import Modal from 'react-bootstrap/Modal';
 import {TaskForm} from "./task-form.tsx";
-import type {ITaskFormValue} from "../../../interfaces";
+import type {ITask, ITaskFormValue} from "../../../interfaces";
 
 interface IProps {
+    task: ITask | null;
     show: boolean;
     onClose: () => void;
-    handleCreateTask: (value: ITaskFormValue) => void;
+    handleSubmitTaskData: (value: ITaskFormValue) => void;
 }
 
 const TaskModal = (props: IProps) => {
-    const { show, onClose, handleCreateTask } = props;
+    const { show, onClose, handleSubmitTaskData, task } = props;
 
     return (
         <>
@@ -20,10 +21,12 @@ const TaskModal = (props: IProps) => {
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Add new task</Modal.Title>
+                    <Modal.Title>{task ? 'Update' : 'Add new'} task</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <TaskForm handleSubmit={handleCreateTask} />
+                    <TaskForm
+                        task={task}
+                        handleSubmitTaskData={handleSubmitTaskData} />
                 </Modal.Body>
             </Modal>
         </>

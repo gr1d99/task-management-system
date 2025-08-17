@@ -48,21 +48,6 @@ export const authSlice = createSlice({
                 state.isAuthenticated = true;
             }
         },
-        initLogin: state => {
-            state.loading = true;
-            state.error = null;
-        },
-        loginSuccess: (state, { payload }) => {
-            state.accessToken = payload.accessToken;
-            state.user = payload.user;
-            state.loading = false;
-            state.error = null;
-        },
-        // Use the PayloadAction type to declare the contents of `action.payload`
-        loginFailure: (state, { payload }) => {
-            state.loading = false
-            state.error = payload
-        },
         logout: (state) => {
             state.user = null
             state.accessToken = null
@@ -96,8 +81,6 @@ export const authSlice = createSlice({
     }
 })
 
-// Export the generated action creators for use in components
-export const { initLogin, loginSuccess, loginFailure, logout, clearError, refreshAuth } = authSlice.actions
+export const { logout, refreshAuth } = authSlice.actions
 
-// Export the slice reducer for use in the store configuration
 export default authSlice.reducer
