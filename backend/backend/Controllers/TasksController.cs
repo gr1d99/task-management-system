@@ -1,10 +1,12 @@
 using backend.Dto;
 using backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/v1/[controller]")]
 public class TasksController(ITaskService taskService) : ControllerBase
 {

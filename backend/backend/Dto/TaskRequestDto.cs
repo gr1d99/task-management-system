@@ -11,5 +11,6 @@ public class TaskRequestDto
     public string Description { get; set; } = string.Empty;
     [Required(ErrorMessage = "Task assignee is required")]
     public long? AssigneeId { get; set; }
+    public long? StatusId { get; set; }
     public DateTime? CompletedAt { get; set; }
 }

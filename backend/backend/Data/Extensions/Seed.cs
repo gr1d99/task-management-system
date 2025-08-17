@@ -45,4 +45,31 @@ public static class Seed
                 DeletedAt = null
             });
     }
+
+    public static void SeedStatuses(this ModelBuilder builder)
+    {
+        builder.Entity<Status>().HasData(
+            new Status()
+            {
+                Id = 1001,
+                Name = "TODO",
+                CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 1), TimeSpan.Zero),
+                UpdatedAt = null,
+            },
+            new Status()
+            {
+                Id = 1002,
+                Name = "IN_PROGRESS",
+                CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 1), TimeSpan.Zero),
+                UpdatedAt = null,
+            },
+            new Status()
+            {
+                Id = 1003,
+                Name = "DONE",
+                CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 1), TimeSpan.Zero),
+                UpdatedAt = null,
+            });
+    }
+
 }

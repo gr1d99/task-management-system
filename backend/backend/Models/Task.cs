@@ -5,6 +5,7 @@ public class Task
     public long Id { get; set; }
     public Guid Token { get; set; }
     public long? AssigneeId { get; set; }
+    public long? StatusId { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public DateTimeOffset? CompletedAt { get; set; }
@@ -12,4 +13,5 @@ public class Task
     public DateTimeOffset? UpdatedAt { get; set; }
     
     public Person? Assignee { get; set; }
+    public Status? Status { get; set; }
 }
