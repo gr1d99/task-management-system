@@ -13,7 +13,8 @@ public class Person
     public string PasswordHash { get; set; } = null!;
     public DateTimeOffset? DeletedAt { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
-    public DateTimeOffset? Updated { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
     
     public List<Task> Tasks { get; set; } = new();
+    public List<PersonRole> PersonRoles { get; set; } = new();
 }

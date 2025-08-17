@@ -9,6 +9,8 @@ namespace backend.Data;
 public class TmsDataContext(DbContextOptions<TmsDataContext> options) : DbContext(options)
 {
     public DbSet<Person> People { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<PersonRole> PersonRoles { get; set; }
     public DbSet<Task> Tasks { get; set; }
     public DbSet<Status> Statuses { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -18,6 +20,8 @@ public class TmsDataContext(DbContextOptions<TmsDataContext> options) : DbContex
         modelBuilder.ApplyConfiguration(new PersonConfiguration());
         modelBuilder.ApplyConfiguration(new TaskConfiguration());
         modelBuilder.ApplyConfiguration(new StatusConfiguration());
+        modelBuilder.ApplyConfiguration(new PersonConfiguration());
+        modelBuilder.ApplyConfiguration(new PersonRoleConfiguration());
         
         modelBuilder.SeedUsers();
         modelBuilder.SeedStatuses();

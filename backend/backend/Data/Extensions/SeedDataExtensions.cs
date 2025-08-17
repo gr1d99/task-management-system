@@ -3,8 +3,52 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Data.Extensions;
 
-public static class Seed
+public static class SeedDataExtensions
 {
+    public static void SeedRoles(this ModelBuilder builder)
+    {
+        builder.Entity<Role>().HasData(
+            new Role()
+            {
+                Id = 1001,
+                Name = "Admin",
+                CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 1), TimeSpan.Zero),
+                UpdatedAt = null,
+                DeletedAt = null,
+            },
+            new Role()
+            {
+                Id = 1002,
+                Name = "User",
+                CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 1), TimeSpan.Zero),
+                UpdatedAt = null,
+                DeletedAt = null,
+            },
+            new Role()
+            {
+                Id = 1003,
+                Name = "Guest",
+                CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 1), TimeSpan.Zero),
+                UpdatedAt = null,
+                DeletedAt = null,
+            });
+        builder.Entity<PersonRole>().HasData(
+            new PersonRole()
+            {
+                RoleId = 1001,
+                PersonId = 1001
+            },
+            new PersonRole()
+            {
+                RoleId = 1002,
+                PersonId = 1002
+            },
+            new PersonRole()
+            {
+                RoleId = 1003,
+                PersonId = 1003
+            });
+    }
     public static void SeedUsers(this ModelBuilder builder)
     {
         builder.Entity<Person>().HasData(
@@ -17,7 +61,7 @@ public static class Seed
                 LastName = "Admin",
                 PasswordHash = "Password",
                 CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 1), TimeSpan.Zero),
-                Updated = null,
+                UpdatedAt = null,
                 DeletedAt = null
             },
             new Person()
@@ -29,7 +73,7 @@ public static class Seed
                 LastName = "Tms",
                 PasswordHash = "Password",
                 CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 1), TimeSpan.Zero),
-                Updated = null,
+                UpdatedAt = null,
                 DeletedAt = null
             },
             new Person()
@@ -41,11 +85,11 @@ public static class Seed
                 LastName = "Tms",
                 PasswordHash = "Password",
                 CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 1), TimeSpan.Zero),
-                Updated = null,
+                UpdatedAt = null,
                 DeletedAt = null
             });
     }
-
+    
     public static void SeedStatuses(this ModelBuilder builder)
     {
         builder.Entity<Status>().HasData(

@@ -30,7 +30,6 @@ public class LoginService(
         return new LoginResponseDto()
         {
             AccessToken = accessToken,
-            RefreshToken = "",
             ExpiresIn = $"{expirationDuration} Minutes",
             User = new PersonResponseDto()
             {
@@ -54,6 +53,7 @@ public class LoginService(
             {
                 new Claim("Id", Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, person.Email),
+                new Claim("Roles", "Admin"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             }),
             Expires = DateTime.UtcNow.AddMinutes(configuration.GetValue<int>("JWT:Expiry")),
@@ -65,16 +65,7 @@ public class LoginService(
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
-        var refreshToken = GenerateRefreshToken();
         
         return jwtToken;
-    }
-
-    private string GenerateRefreshToken()
-    {
-        var randomNumber = new byte[32];
-        using var rng = RandomNumberGenerator.Create();
-        rng.GetBytes(randomNumber);
-        return Convert.ToBase64String(randomNumber);
     }
 }
