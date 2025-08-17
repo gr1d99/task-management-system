@@ -23,7 +23,11 @@ public static class DependencyInjection
     {
         builder.Services.AddScoped<ITaskService, TaskService>();
         builder.Services.AddScoped<IPaginationService, PaginationService>();
-
+        builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+        builder.Services.AddScoped<ILoginService, LoginService>();
+        
         return services;
     }
+    
+    
 }

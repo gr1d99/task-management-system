@@ -1,6 +1,7 @@
 using API.Dto;
 using backend.Data;
 using backend.Dto;
+using backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Task = backend.Models.Task;
 
@@ -10,13 +11,17 @@ public class TaskService(
     TmsDataContext dbContext,
     IPaginationService paginationService) : ITaskService
 {
+    public static string DefaultStatus = "TODO";
     public async Task<TaskResponseDto> CreateAsync(TaskRequestDto data)
     {
+        Status status = (await dbContext.Statuses.FirstOrDefaultAsync(s => s.Name == DefaultStatus))!;
+
         Task? task = new Task()
         {
             Name = data.Name,
             Description = data.Description,
             AssigneeId = data.AssigneeId,
+            Status = status
         };
 
         await dbContext.AddAsync(task);
@@ -25,6 +30,7 @@ public class TaskService(
 
         task = await dbContext.Tasks
             .Include(t => t.Assignee)
+            .Include(t => t.Status)
             .FirstOrDefaultAsync(t => t.Token == task.Token);
 
         if (task is null)
@@ -38,6 +44,7 @@ public class TaskService(
     {
         Task? task = await dbContext.Tasks
             .Include(t => t.Assignee)
+            .Include(t => t.Status)
             .FirstOrDefaultAsync(t => t.Token == token);
 
         if (task is null)
@@ -51,7 +58,8 @@ public class TaskService(
     {
         IQueryable<Task> queryable = dbContext.Tasks
             .OrderByDescending(t => t.CreatedAt)
-            .Include(t => t.Assignee);
+            .Include(t => t.Assignee)
+            .Include(t => t.Status);
 
         if (query.AssigneeId != null)
         {
@@ -89,6 +97,11 @@ public class TaskService(
             task.AssigneeId = data.AssigneeId;
         }
 
+        if (data.StatusId != null && data.StatusId != task.StatusId)
+        {
+            task.StatusId = data.StatusId;
+        }
+
         if (data.CompletedAt != null)
         {
             var datetimeUtc = data.CompletedAt.Value.ToUniversalTime();
@@ -97,7 +110,7 @@ public class TaskService(
 
         await dbContext.SaveChangesAsync();
     }
-    static TaskResponseDto ToTaskResponseDto(Task task)
+    private static TaskResponseDto ToTaskResponseDto(Task task)
     {
         return new TaskResponseDto()
         {
@@ -107,10 +120,11 @@ public class TaskService(
             Description = task.Description,
             CompletedAt = task.CompletedAt,
             CreatedAt = task.CreatedAt,
-            Assignee = GetTaskAssignee(task)
+            Assignee = GetTaskAssignee(task),
+            Status = GetTaskStatus(task)
         };
     }
-    static PersonResponseDto? GetTaskAssignee(Task task)
+    private static PersonResponseDto? GetTaskAssignee(Task task)
     {
         if (task.Assignee is null)
         {
@@ -123,6 +137,19 @@ public class TaskService(
             Email = task.Assignee.Email,
             FirstName = task.Assignee.FirstName,
             LastName = task.Assignee.LastName,
+        };
+    }
+    private static StatusDto? GetTaskStatus(Task task)
+    {
+        if (task.Status is null)
+        {
+            return null;
+        }
+
+        return new StatusDto()
+        {
+            Id = task.Status.Id,
+            Name = task.Status.Name
         };
     }
 }

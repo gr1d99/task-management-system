@@ -25,5 +25,9 @@ public class TaskConfiguration : IEntityTypeConfiguration<Models.Task>
             .HasOne<Person>(t => t.Assignee)
             .WithMany(p => p.Tasks)
             .HasForeignKey(t => t.AssigneeId);
+        builder
+            .HasOne<Status>(t => t.Status)
+            .WithMany(s => s.Tasks)
+            .HasForeignKey(t => t.StatusId);
     }
 }

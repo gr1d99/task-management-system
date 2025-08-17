@@ -12,4 +12,5 @@ public class TaskResponseDto
     public DateTimeOffset CreatedAt { get; set; }
     
     public PersonResponseDto? Assignee { get; set; }
+    public StatusDto? Status { get; set; }
 }

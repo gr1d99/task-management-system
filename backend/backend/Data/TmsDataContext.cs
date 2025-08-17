@@ -10,14 +10,17 @@ public class TmsDataContext(DbContextOptions<TmsDataContext> options) : DbContex
 {
     public DbSet<Person> People { get; set; }
     public DbSet<Task> Tasks { get; set; }
+    public DbSet<Status> Statuses { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new PersonConfiguration());
         modelBuilder.ApplyConfiguration(new TaskConfiguration());
+        modelBuilder.ApplyConfiguration(new StatusConfiguration());
         
         modelBuilder.SeedUsers();
+        modelBuilder.SeedStatuses();
     }
 
     public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
