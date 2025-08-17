@@ -1,13 +1,13 @@
-import {Outlet} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 import {Navbar} from "./navbar.tsx";
 import {toast, ToastContainer} from "react-toastify";
 import {useAppDispatch, useAppSelector} from "../../store";
 import {useEffect} from "react";
-import { redirect } from "react-router-dom";
 import {refreshAuth} from "../../features/auth/auth-slice.ts";
 import {hideNotfication} from "../../features/alerts/notification-slice.ts";
 
 const RootLayout = () => {
+    const navigate = useNavigate();
     const {content} = useAppSelector(state => state.notification)
     const dispatch = useAppDispatch();
     const {isAuthenticated} = useAppSelector(state => state.auth);
@@ -29,11 +29,11 @@ const RootLayout = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            redirect('/tasks')
+            navigate('/tasks')
+        } else {
+            navigate('/login')
         }
-
-        console.log({ isAuthenticated })
-    }, [isAuthenticated]);
+        }, [isAuthenticated]);
 
 
     return (
